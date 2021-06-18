@@ -170,6 +170,7 @@ input[type="submit"],
     padding: 8px;
 }
 .boton{
+    color: white !important;
     width: 125px;
     text-align: center;
 }

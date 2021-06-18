@@ -17,7 +17,8 @@ if(isset($_POST)){
     $email = isset($_POST['email']) ? mysqli_real_escape_string($db, trim($_POST['email'])) : false;
 
     
-
+    // var_dump($_POST);
+    // die();
 
     //Array de errores
 
@@ -52,39 +53,55 @@ if(isset($_POST)){
      
 
         $guardar_usuario = false;
-    if(count($errores) == 0){
-        $guardar_usuario = true;
+         if(count($errores) == 0){
 
+                    $guardar_usuario = true;
 
-        
-        //Actualizar Usuario en la base de datos
-        $usuario = $_SESSION['usuario'];
+                    $usuario = $_SESSION['usuario'];
 
-        $sql = "UPDATE usuarios SET".
-                "nombre = '$nombre'".
-                "apellidos = '$apellidos'".
-                "email = '$email'".
-                "WHERE id = ".$usuario['id'];
+                    //Comprobamos si el email ya existe en la bd
+                    $sql = "SELECT id, email FROM usuarios WHERE email = '$email'";
+                    $isset_email = mysqli_query($db,$sql);
+                    $isset_user = mysqli_fetch_assoc($isset_email);
 
-                $guardar = mysqli_query($db,$sql);
+                if($isset_user['id'] == $usuario['id'] || empty($isset_user)){
+                   
+                    
+                    //Actualizar Usuario en la base de datos
+       
+                    $sql = "UPDATE usuarios SET ".
+                            "nombre = '$nombre',".
+                            "apellidos = '$apellidos',".
+                            "email = '$email'".
+                            "WHERE id = ".$usuario['id'];
 
-                // var_dump(mysqli_error($db,$sql));
-                // var_dump(mysqli_query($db,$sql));
-                // die();
-                if($guardar){
+                            $guardar = mysqli_query($db,$sql);
 
-                $_SESSION['usuario']['nombre'] = $nombre;
-                $_SESSION['usuario']['apellidos'] = $apellidos;
-                $_SESSION['usuario']['email'] = $email;
-                
-                $_SESSION['completado'] = "Tus datos se han actualizado con éxito";
+                            // var_dump(mysqli_error($db,$sql));
+                            // var_dump(mysqli_query($db,$sql));
+                            // die();
+                            if($guardar){
+                                $_SESSION['usuario']['nombre'] =$nombre;
+                                $_SESSION['usuario']['apellidos'] =$apellidos;
+                                $_SESSION['usuario']['email'] =$email;
+                                
+                                $_SESSION['completado'] = "Tus datos se han actualizado con éxito";
+                            }else{
+                                $_SESSION['errores']['general'] = "Fallo al actualizar tus datos!"; 
+                            }  
+               
+                      }else{
+                        $_SESSION['errores']['general'] = "El usuario ya existe en la base de datos.";
+                    }
+         
+                    
+                }else{
+                    $_SESSION['errores'] = $errores;
                 }
 
-        
+
             
-        }else{
-            $_SESSION['errores']['general'] = "Fallo al actualizar tus datos!"; 
-        }
+
 
 
 
@@ -98,15 +115,3 @@ if(isset($_POST)){
 
 
   header("Location: mis_datos.php");
-
-
-
-
-
-
-
-
-
-
-
-

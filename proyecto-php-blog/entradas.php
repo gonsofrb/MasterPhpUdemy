@@ -4,18 +4,17 @@
 
 <!--CAJA PRINCIPAL-->
 <div id="principal">
-    <h1>Ultimas entradas</h1>
+    <h1>Todas Las Entradas</h1>
 
     <?php
-        $entradas = conseguirEntradas($db, true);
+        $entradas = conseguirEntradas($db);
         
         if(!empty($entradas)):
             while($entrada = mysqli_fetch_assoc($entradas)):
 
     ?>        
             <article class="entrada">
-                <a href="entrada.php?id=<?=$entrada['id'];?>">
-              
+                <a href="">
                         <h2><?=$entrada['titulo']; ?></h2>
                         <span class="fecha"><?=$entrada['categoria'].'|'.$entrada['fecha'];?></span>
                         <p>     <!--substr(string,comienzo de caracteres,maximo de caracteres-->
@@ -29,9 +28,7 @@
         endif;    
     ?>
 
-    <div id="ver-todas">
-        <a href="entradas.php">Ver todas las entradas</a>
-    </div>
+    
     </div>
 <!--Fin Principal-->
 
